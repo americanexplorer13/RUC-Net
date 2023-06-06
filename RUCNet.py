@@ -95,11 +95,6 @@ class RUCNet(nn.Module):
         self.scse_down3 = ChannelSpatialSELayer(256, reduction_ratio=self.reduction)
         self.scse_down4 = ChannelSpatialSELayer(512, reduction_ratio=self.reduction)
 
-        self.scse_up1 = ChannelSpatialSELayer(256, reduction_ratio=self.reduction)
-        self.scse_up2 = ChannelSpatialSELayer(128, reduction_ratio=self.reduction)
-        self.scse_up3 = ChannelSpatialSELayer(64, reduction_ratio=self.reduction)
-        self.scse_up4 = ChannelSpatialSELayer(64, reduction_ratio=self.reduction)
-
         self.inc = (DoubleConv(n_channels, 64))
 
         self.down1 = (Down(64, 64))
@@ -116,28 +111,15 @@ class RUCNet(nn.Module):
 
     def forward(self, x):
         x1 = self.inc(x)
-
         x2 = self.down1(x1)
         x2 = self.scse_down1(x2)
-
         x3 = self.down2(x2)
         x3 = self.scse_down2(x3)
-
         x4 = self.down3(x3)
         x4 = self.scse_down3(x4)
-
         x5 = self.down4(x4)
-
         x = self.up1(x5, x4)
-        x = self.scse_up1(x)
-
         x = self.up2(x, x3)
-        x = self.scse_up2(x)
-
         x = self.up3(x, x2)
-        x = self.scse_up3(x)
-
         x = self.up4(x, x1)
-        x = self.scse_up4(x)
-
         return self.outc(x)
