@@ -1,7 +1,7 @@
 import torch
-from scse import SCSEBlock
 import torch.nn as nn
 import torch.nn.functional as F
+from scse import ChannelSpatialSELayer
 
 
 class DoubleConv(nn.Module):
@@ -40,7 +40,7 @@ class Down(nn.Module):
         self.conv1_0 = nn.Conv2d(in_channels, out_channels, kernel_size=1, stride=2, padding=0, bias=False)
         self.conv1_1 = nn.Conv2d(out_channels, out_channels, kernel_size=1, stride=1, padding=0, bias=False)
 
-        self.scse = SCSEBlock(out_channels, reduction=2)
+        self.scse = ChannelSpatialSELayer(out_channels, reduction_ratio=2)
 
     def forward(self, x):
 
@@ -66,7 +66,7 @@ class Up(nn.Module):
 
         self.up = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
         self.conv = DoubleConv(in_channels, out_channels)
-        self.scse = SCSEBlock(out_channels, reduction=2)
+        self.scse = ChannelSpatialSELayer(out_channels, reduction_ratio=2)
 
     def forward(self, x1, x2):
         x = torch.cat((self.up(x1), x2), dim=1)
@@ -90,15 +90,15 @@ class RUCNet(nn.Module):
         self.n_classes = n_classes
         self.reduction = reduction
 
-        self.scse_down1 = SCSEBlock(64, reduction=self.reduction)
-        self.scse_down2 = SCSEBlock(128, reduction=self.reduction)
-        self.scse_down3 = SCSEBlock(256, reduction=self.reduction)
-        self.scse_down4 = SCSEBlock(512, reduction=self.reduction)
+        self.scse_down1 = ChannelSpatialSELayer(64, reduction_ratio=self.reduction)
+        self.scse_down2 = ChannelSpatialSELayer(128, reduction_ratio=self.reduction)
+        self.scse_down3 = ChannelSpatialSELayer(256, reduction_ratio=self.reduction)
+        self.scse_down4 = ChannelSpatialSELayer(512, reduction_ratio=self.reduction)
 
-        self.scse_up1 = SCSEBlock(256, reduction=self.reduction)
-        self.scse_up2 = SCSEBlock(128, reduction=self.reduction)
-        self.scse_up3 = SCSEBlock(64, reduction=self.reduction)
-        self.scse_up4 = SCSEBlock(64, reduction=self.reduction)
+        self.scse_up1 = ChannelSpatialSELayer(256, reduction_ratio=self.reduction)
+        self.scse_up2 = ChannelSpatialSELayer(128, reduction_ratio=self.reduction)
+        self.scse_up3 = ChannelSpatialSELayer(64, reduction_ratio=self.reduction)
+        self.scse_up4 = ChannelSpatialSELayer(64, reduction_ratio=self.reduction)
 
         self.inc = (DoubleConv(n_channels, 64))
 
@@ -127,7 +127,6 @@ class RUCNet(nn.Module):
         x4 = self.scse_down3(x4)
 
         x5 = self.down4(x4)
-        x5 = self.scse_down4(x5)
 
         x = self.up1(x5, x4)
         x = self.scse_up1(x)
