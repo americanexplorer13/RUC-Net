@@ -8,9 +8,7 @@ pytorch == 2.0.0
 # Experiments 
 ![image](https://github.com/americanexplorer13/rucnet/assets/57260643/de158b12-2a2b-4178-82d0-70d0f618fe0d)
 # Bias and limitations
-If you would look through my code, you will notice 3 differents from original paperwork: 
+If you would look through my code, you will notice 2 differents from original paperwork: 
 - Last conv layer were changed from conv3x3 to conv1x1. I suppose, it's a paperwork typo. 
 - GroupNorm instead of BatchNorm. It's preferable to use GN if your batch_size < 32, but if you don't need this, just change it in code. 
-- In my implementation I used scSE block, however in original paperwork there's no restriction to use any of these blocks (SCSE, SSE, CSE) so asap I'll update original scse.py file to maintain these blocks
 
-**Updated 06.06.2023: Now all scSE blocks are implemented, feel free to explore.**
