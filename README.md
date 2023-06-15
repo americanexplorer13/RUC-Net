@@ -5,6 +5,7 @@ This is my own PyTorch implementation of 2023 U-Net (RUC-Net) for crack segmenta
 ![image](https://github.com/americanexplorer13/rucnet/assets/57260643/829e2220-9ed7-4063-a9c8-dfbdd8bb181d)
 # Usage
 Just download RUC-Net.py + scse.py and import RUCNet model into your model initialization pipeline.
+
 pytorch == 2.0.0
 # Experiments 
 ![image](https://github.com/americanexplorer13/rucnet/assets/57260643/de158b12-2a2b-4178-82d0-70d0f618fe0d)
